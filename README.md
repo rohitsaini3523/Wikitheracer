@@ -25,7 +25,7 @@ Step 2:  Open the wikitheracer directory and create a virtual environement
 python -m venv venv
 ```
 
-Step3: activate Virtual Environment 
+Step3: activate Virtual Environment
 
 ```
 venv\Scripts\activate
@@ -53,3 +53,7 @@ Map to vist form Mango to Apple is :['Mango', 'Apple']
 Exection Time: 0.4536592960357666
 
 The program will ask you to enter number of link it parse to find the final state if it found will print the total visited page other wise it will print NONE and Show "NO path found"
+
+---
+
+* [X] Milestone 1: BFS(Simple Breadth First Search)
