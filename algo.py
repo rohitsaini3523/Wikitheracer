@@ -1,6 +1,7 @@
 import requests
 import  time
 from bs4 import BeautifulSoup
+n = int(input("Enter the Maximum number of pages to visit: "))
 dummy_values = ["Search",
                 "learn more",
                 "Talk",
@@ -29,8 +30,8 @@ dummy_values = ["Search",
 
 
 def getter_links(value):
-    got_values = []
-    url = "https://en.wikipedia.org/wiki/" + value.capitalize()
+    got_values = set()
+    url = "https://en.wikipedia.org/wiki/" + value
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     check = "/wiki"
@@ -40,7 +41,7 @@ def getter_links(value):
         if check in str(link_href):
             if link_text not in dummy_values and link_text.isalpha():
                 if link_text not in got_values:
-                    got_values.append(link_text)
+                    got_values.add(link_text)
     return got_values
 
 
@@ -53,14 +54,18 @@ def evaluate(initial, final):
         if page in visited:
             continue
         visited.add(page)
+        cnt+=1
         links = getter_links(page)
         for link in links:
             if link == final:
-                return stored_path + [link]
+                print("Total Visited Pages: ",cnt)
+                return str(stored_path + [link])
             queue.append((link, stored_path + [link]))
         cnt+=1
-        if(cnt>20):
-            return
+        if(cnt>n):
+            print("Total Visited Pages: ",cnt)
+            print("No Path Found")
+            break
     return None
 
 
