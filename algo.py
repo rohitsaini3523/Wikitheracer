@@ -1,7 +1,7 @@
 import requests
 import  time
 from bs4 import BeautifulSoup
-n = int(input("Enter the Maximum number of pages to visit: "))
+# n = int(input("Enter the Maximum number of pages to visit: "))
 dummy_values = ["Search",
                 "learn more",
                 "Talk",
@@ -32,7 +32,11 @@ dummy_values = ["Search",
 def getter_links(value):
     got_values = set()
     url = "https://en.wikipedia.org/wiki/" + value
-    response = requests.get(url)
+    response = requests.get(url) 
+    #check response status
+    if response.status_code != 200:
+        print("Error in fetching the page")
+        exit()
     soup = BeautifulSoup(response.text, "html.parser")
     check = "/wiki"
     for link in soup.find_all("a"):
@@ -44,11 +48,11 @@ def getter_links(value):
                     got_values.add(link_text)
     return got_values
 
-
 def evaluate(initial, final):
     cnt =0
     visited = set()
     queue = [(initial, [initial])]
+    end_link = getter_links(final)
     while queue:
         (page, stored_path) = queue.pop(0)
         if page in visited:
@@ -62,18 +66,57 @@ def evaluate(initial, final):
                 return str(stored_path + [link])
             queue.append((link, stored_path + [link]))
         cnt+=1
-        if(cnt>n):
-            print("Total Visited Pages: ",cnt)
-            print("No Path Found")
-            break
+        # if(cnt>n):
+        #     print("Total Visited Pages: ",cnt)
+        #     print("No Path Found")
+        #     break
+    return None
+#heuristic function to find the path from initial to final word based on distance between two words
+def heuristic(initial, final):
+    initial = initial.lower()
+    final = final.lower()
+    distance = 0
+    #if final is less than initial then swap the values
+    if len(final) < len(initial):
+        initial, final = final, initial
+    for i in range(len(initial)):
+        if initial[i] != final[i]:
+            distance += 1
+    return distance
+
+#using heuristic function to evaluate the path
+def evaluate_using_heuristic(initial, final):
+    cnt =0
+    #using priority queue to store the path
+    queue = [(heuristic(initial, final), initial, [initial])]
+    visited = set()
+    end_link = getter_links(final)
+    while queue:
+        (distance, page, stored_path) = queue.pop(0)
+        if page in visited:
+            continue
+        visited.add(page)
+        cnt+=1
+        links = getter_links(page)
+        for link in links:
+            if link == final:
+                print("Total Visited Pages: ",cnt)
+                return str(stored_path + [link])
+            queue.append((heuristic(link, final), link, stored_path + [link]))
+        cnt+=1
+        # if(cnt>n):
+        #     print("Total Visited Pages: ",cnt)
+        #     print("No Path Found")
+        #     break
     return None
 
-
-initial = input("Enter initial Word: ")
-final = input("Enter final Word: ")
-start = time.time()
-stored_path = evaluate(initial, final)
-print("Map to vist form "+initial + " to " + final + " is :" + str(stored_path))
-total = time.time()-start
-print("Exection Time: "+ str(total))
-# got_values contain all possible link
+def main_function():
+    initial = input("Enter initial Word: ")
+    final = input("Enter final Word: ")
+    start = time.time()
+    stored_path = evaluate_using_heuristic(initial, final)
+    print("Map to vist form "+initial + " to " + final + " is :" + str(stored_path))
+    total = time.time()-start
+    print("Exection Time: "+ str(total))
+    # got_values contain all possible link
+main_function()
