@@ -2,10 +2,10 @@ The Following program is built on python 3.11.1
 
 The Following libraries were used:
 
-* bs4
-  * BeautifulSoup
-* requests
-* time
+- bs4
+  - BeautifulSoup
+- requests
+- time
 
 ## Testing
 
@@ -19,7 +19,7 @@ Step 1: Clone the Repository
 git clone https://github.com/rohitsaini3523/wikitheracer
 ```
 
-Step 2:  Open the wikitheracer directory and create a virtual environement
+Step 2: Open the wikitheracer directory and create a virtual environement
 
 ```
 python -m venv venv
@@ -48,7 +48,7 @@ Example:
 Enter the Maximum number of pages to visit: 10
 Enter initial Word: Mango
 Enter final Word: Apple
-Total Visited Pages:  1
+Total Visited Pages: 1
 Map to vist form Mango to Apple is :['Mango', 'Apple']
 Exection Time: 0.4536592960357666
 
@@ -56,4 +56,6 @@ The program will ask you to enter number of link it parse to find the final stat
 
 ---
 
-* [X] Milestone 1: BFS(Simple Breadth First Search)
+- [x] Milestone 1: BFS(Simple Breadth First Search)
+- [x] Milestone 2: Heuristic Function
+- [ ] Milestone 3: Dockerization
