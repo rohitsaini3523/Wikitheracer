@@ -1,5 +1,6 @@
 import requests
 import  time
+import sys
 from bs4 import BeautifulSoup
 # n = int(input("Enter the Maximum number of pages to visit: "))
 dummy_values = ["Search",
@@ -35,8 +36,9 @@ def getter_links(value):
     response = requests.get(url) 
     #check response status
     if response.status_code != 200:
-        print("Error in fetching the page")
-        exit()
+        # print("Error in fetching the page")
+        # exit()
+        return []
     soup = BeautifulSoup(response.text, "html.parser")
     check = "/wiki"
     for link in soup.find_all("a"):
@@ -49,10 +51,17 @@ def getter_links(value):
     return got_values
 
 def evaluate(initial, final):
+    if (initial == final):
+        stored_path = [initial]
+        return stored_path
     cnt =0
     visited = set()
     queue = [(initial, [initial])]
     end_link = getter_links(final)
+    if(getter_links(initial)==None):
+        return None
+    if(end_link==None):
+        return None
     while queue:
         (page, stored_path) = queue.pop(0)
         if page in visited:
@@ -60,6 +69,8 @@ def evaluate(initial, final):
         visited.add(page)
         cnt+=1
         links = getter_links(page)
+        if (len(links) == 0):
+            continue
         for link in links:
             if link == final:
                 print("Total Visited Pages: ",cnt)
@@ -86,11 +97,18 @@ def heuristic(initial, final):
 
 #using heuristic function to evaluate the path
 def evaluate_using_heuristic(initial, final):
+    if(initial==final):
+        stored_path = [initial]
+        return stored_path
     cnt =0
     #using priority queue to store the path
     queue = [(heuristic(initial, final), initial, [initial])]
     visited = set()
     end_link = getter_links(final)
+    if (getter_links(initial) == None):
+        return None
+    if (end_link == None):
+        return None
     while queue:
         (distance, page, stored_path) = queue.pop(0)
         if page in visited:
@@ -98,6 +116,8 @@ def evaluate_using_heuristic(initial, final):
         visited.add(page)
         cnt+=1
         links = getter_links(page)
+        if(len(links)==0):
+            continue
         for link in links:
             if link == final:
                 print("Total Visited Pages: ",cnt)
@@ -111,12 +131,18 @@ def evaluate_using_heuristic(initial, final):
     return None
 
 def main_function():
-    initial = input("Enter initial Word: ")
-    final = input("Enter final Word: ")
+    # initial = input("Enter initial Word: ")
+    # final = input("Enter final Word: ")
+    initial = sys.argv[1]
+    final = sys.argv[2]
     start = time.time()
     stored_path = evaluate_using_heuristic(initial, final)
     print("Map to vist form "+initial + " to " + final + " is :" + str(stored_path))
     total = time.time()-start
     print("Exection Time: "+ str(total))
     # got_values contain all possible link
-main_function()
+if(__name__ == "__main__"):
+    main_function()
+
+#sending input to the function from command line
+# python algo.py "Mango" "Seed"
